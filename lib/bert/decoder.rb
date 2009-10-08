@@ -16,16 +16,18 @@ module BERT
     # Returns the converted Ruby object
     def self.convert(item)
       case item
+        when TrueClass, FalseClass
+          item.to_s.to_sym
         when [:nil, :nil]
           nil
         when Array
           case item.first
             when :dict
-              item[1..-1].inject({}) do |acc, x|
+              item[1].inject({}) do |acc, x|
                 acc[convert(x[0])] = convert(x[1]); acc
               end
             when :bool
-              item[1] == :true
+              item[1]
             when :time
               Time.at(item[1].to_i, item[2].to_i)
             when :regex

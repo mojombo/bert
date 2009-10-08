@@ -17,9 +17,9 @@ module BERT
     def self.convert(item)
       case item
         when Hash
-          a = [:dict]
-          item.each_pair { |k, v| a << l[convert(k), convert(v)] }
-          a
+          pairs = l[]
+          item.each_pair { |k, v| pairs << [convert(k), convert(v)] }
+          [:dict, pairs]
         when Array
           item.map { |x| convert(x) }
         when nil

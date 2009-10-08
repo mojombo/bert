@@ -14,13 +14,13 @@ class EncoderTest < Test::Unit::TestCase
 
     should "convert hashes" do
       before = {:foo => 'bar'}
-      after = [:dict, [:foo, 'bar']]
+      after = [:dict, [[:foo, 'bar']]]
       assert_equal after, BERT::Encoder.convert(before)
     end
 
     should "convert nested hashes" do
       before = {:foo => {:baz => 'bar'}}
-      after = [:dict, [:foo, [:dict, [:baz, 'bar']]]]
+      after = [:dict, [[:foo, [:dict, [[:baz, "bar"]]]]]]
       assert_equal after, BERT::Encoder.convert(before)
     end
 
