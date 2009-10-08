@@ -24,6 +24,18 @@ class EncoderTest < Test::Unit::TestCase
       assert_equal after, BERT::Encoder.convert(before)
     end
 
+    should "convert true" do
+      before = true
+      after = [:bool, :true]
+      assert_equal after, BERT::Encoder.convert(before)
+    end
+
+    should "convert false" do
+      before = false
+      after = [:bool, :false]
+      assert_equal after, BERT::Encoder.convert(before)
+    end
+
     should "leave other stuff alone" do
       before = [1, 2.0, [:foo, 'bar']]
       assert_equal before, BERT::Encoder.convert(before)

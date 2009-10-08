@@ -19,12 +19,15 @@ module BERT
         when [:nil, :nil]
           nil
         when Array
-          if item.first == :dict
-            item[1..-1].inject({}) do |acc, x|
-              acc[convert(x[0])] = convert(x[1]); acc
-            end
-          else
-            item.map { |x| convert(x) }
+          case item.first
+            when :dict
+              item[1..-1].inject({}) do |acc, x|
+                acc[convert(x[0])] = convert(x[1]); acc
+              end
+            when :bool
+              item[1] == :true
+            else
+              item.map { |x| convert(x) }
           end
         else
           item

@@ -24,6 +24,8 @@ module BERT
           item.map { |x| convert(x) }
         when nil
           [:nil, :nil]
+        when TrueClass, FalseClass
+          [:bool, item.to_s.to_sym]
         else
           item
       end
