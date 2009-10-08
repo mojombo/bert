@@ -28,6 +28,12 @@ module BERT
               item[1] == :true
             when :time
               Time.at(item[1].to_i, item[2].to_i)
+            when :regex
+              options = 0
+              options |= Regexp::EXTENDED if item[2] =~ /x/
+              options |= Regexp::IGNORECASE if item[2] =~ /i/
+              options |= Regexp::MULTILINE if item[2] =~ /m/
+              Regexp.new(item[1], options)
             else
               item.map { |x| convert(x) }
           end

@@ -28,6 +28,12 @@ module BERT
           [:bool, item.to_s.to_sym]
         when Time
           [:time, item.to_i, item.usec]
+        when Regexp
+          options = ''
+          options += 'i' if item.options & Regexp::IGNORECASE > 0
+          options += 'x' if item.options & Regexp::EXTENDED > 0
+          options += 'm' if item.options & Regexp::MULTILINE > 0
+          [:regex, item.source, options]
         else
           item
       end

@@ -44,6 +44,12 @@ class DecoderTest < Test::Unit::TestCase
       assert_equal after, BERT::Decoder.convert(before)
     end
 
+    should "convert regexen" do
+      before = [:regex, '^c(a)t$', 'ix']
+      after = /^c(a)t$/ix
+      assert_equal after, BERT::Decoder.convert(before)
+    end
+
     should "leave other stuff alone" do
       before = [1, 2.0, [:foo, 'bar']]
       assert_equal before, BERT::Decoder.convert(before)

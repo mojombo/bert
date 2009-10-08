@@ -42,6 +42,12 @@ class EncoderTest < Test::Unit::TestCase
       assert_equal after, BERT::Encoder.convert(before)
     end
 
+    should "convert regexen" do
+      before = /^c(a)t$/ix
+      after = [:regex, '^c(a)t$', 'ix']
+      assert_equal after, BERT::Encoder.convert(before)
+    end
+
     should "leave other stuff alone" do
       before = [1, 2.0, [:foo, 'bar']]
       assert_equal before, BERT::Encoder.convert(before)
