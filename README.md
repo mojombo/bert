@@ -22,6 +22,14 @@ Instances of the following Ruby classes will be automatically converted to the p
 * Time
 * Regexp
 
+Most of these conversions work as expected with one important caveat. Arrays will be converted into tuples. To have an array converted as a list, simply prepend it with `l` like so:
+
+    [:foo, l[1, 2, 3]]
+
+This will be converted as (in Erlang syntax):
+
+    {foo, [1, 2, 3]}
+
 
 Installation
 ------------
