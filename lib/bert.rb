@@ -19,3 +19,7 @@ module BERT
     "<<" + bytes.join(',') + ">>"
   end
 end
+
+def l
+  Erl::List
+end
