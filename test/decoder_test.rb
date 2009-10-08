@@ -38,6 +38,12 @@ class DecoderTest < Test::Unit::TestCase
       assert_equal after, BERT::Decoder.convert(before)
     end
 
+    should "convert times" do
+      before = [:time, 1254976067, 0]
+      after = Time.at(1254976067)
+      assert_equal after, BERT::Decoder.convert(before)
+    end
+
     should "leave other stuff alone" do
       before = [1, 2.0, [:foo, 'bar']]
       assert_equal before, BERT::Decoder.convert(before)

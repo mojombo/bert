@@ -26,6 +26,8 @@ module BERT
           [:nil, :nil]
         when TrueClass, FalseClass
           [:bool, item.to_s.to_sym]
+        when Time
+          [:time, item.to_i, item.usec]
         else
           item
       end

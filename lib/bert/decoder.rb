@@ -26,6 +26,8 @@ module BERT
               end
             when :bool
               item[1] == :true
+            when :time
+              Time.at(item[1].to_i, item[2].to_i)
             else
               item.map { |x| convert(x) }
           end
