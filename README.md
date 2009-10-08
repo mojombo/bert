@@ -1,9 +1,28 @@
-= bert
+BERT
+====
 
-Description goes here.
+BERT is a BERT (Binary ERlang Term) serialization library for Ruby. It can
+encode Ruby objects into BERT format and decode BERT binaries into Ruby
+objects.
 
-== Note on Patches/Pull Requests
- 
+
+Installation
+------------
+
+    gem install bert -s http://gemcutter.org
+
+
+Usage
+-----
+
+    require 'bert'
+    
+    BERT.encode([
+
+
+Note on Patches/Pull Requests
+-----------------------------
+
 * Fork the project.
 * Make your feature addition or bug fix.
 * Add tests for it. This is important so I don't break it in a
@@ -13,6 +32,8 @@ Description goes here.
    bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
 
-== Copyright
+
+Copyright
+---------
 
 Copyright (c) 2009 Tom Preston-Werner. See LICENSE for details.
