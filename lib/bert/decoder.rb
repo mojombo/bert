@@ -20,6 +20,8 @@ module BERT
           item.to_s.to_sym
         when [:nil, :nil]
           nil
+        when Erl::List
+          item.map { |x| convert(x) }
         when Array
           case item.first
             when :dict
@@ -37,7 +39,7 @@ module BERT
               options |= Regexp::MULTILINE if item[2] =~ /m/
               Regexp.new(item[1], options)
             else
-              item.map { |x| convert(x) }
+              Tuple.new(item.map { |x| convert(x) })
           end
         else
           item

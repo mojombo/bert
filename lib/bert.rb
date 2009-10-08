@@ -20,6 +20,14 @@ module BERT
   end
 end
 
-def l
-  Erl::List
+module BERT
+  class Tuple < Array
+    def inspect
+      "t#{super}"
+    end
+  end
+end
+
+def t
+  BERT::Tuple
 end

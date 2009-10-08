@@ -17,11 +17,13 @@ module BERT
     def self.convert(item)
       case item
         when Hash
-          pairs = l[]
+          pairs = Erl::List[]
           item.each_pair { |k, v| pairs << [convert(k), convert(v)] }
           [:dict, pairs]
-        when Array
+        when Tuple
           item.map { |x| convert(x) }
+        when Array
+          Erl::List.new(item.map { |x| convert(x) })
         when nil
           [:nil, :nil]
         when TrueClass, FalseClass
