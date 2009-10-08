@@ -17,7 +17,14 @@ Usage
 
     require 'bert'
     
-    BERT.encode([
+    bert = BERT.encode([:user, {:name => 'TPW', :nick => 'mojombo'}])
+    # => "\203h\002d\000\004userh\003d\000\004dict
+          h\002d\000\004namem\000\000\000\003TPWh\002d
+          \000\004nickm\000\000\000\amojombo"
+    
+    BERT.decode(bert)
+    # => [:user, {:name => 'TPW', :nick => 'mojombo'}]
+
 
 
 Note on Patches/Pull Requests
