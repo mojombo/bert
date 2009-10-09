@@ -5,7 +5,7 @@ BERT is a BERT (Binary ERlang Term) serialization library for Ruby. It can
 encode Ruby objects into BERT format and decode BERT binaries into Ruby
 objects.
 
-See the BERT specification at "bert-rpc.org":http://bert-rpc.org.
+See the BERT specification at [bert-rpc.org](http://bert-rpc.org).
 
 Instances of the following Ruby classes will be automatically converted to the proper simple BERT type:
 
