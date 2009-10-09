@@ -5,6 +5,8 @@ BERT is a BERT (Binary ERlang Term) serialization library for Ruby. It can
 encode Ruby objects into BERT format and decode BERT binaries into Ruby
 objects.
 
+See the BERT specification at "bert-rpc.org":http://bert-rpc.org.
+
 Instances of the following Ruby classes will be automatically converted to the proper simple BERT type:
 
 * Fixnum
@@ -44,12 +46,12 @@ Usage
     require 'bert'
     
     bert = BERT.encode(t[:user, {:name => 'TPW', :nick => 'mojombo'}])
-    # => "\203h\002d\000\004userh\003d\000\004dictl\000\000\000\002d
-          \000\004nickm\000\000\000\amojombojl\000\000\000\002d\000
-          \004namem\000\000\000\003TPWj"
+    # => "\203h\002d\000\004userh\002d\000\004dictl\000\000\000\002h\002d
+          \000\004namem\000\000\000\003TPWh\002d\000\004nickm\000\000\000
+          \amojomboj"
     
     BERT.decode(bert)
-    # => t[:user, {:name => 'TPW', :nick => 'mojombo'}]
+    # => t[:user, {:name=>"TPW", :nick=>"mojombo"}]
 
 
 
