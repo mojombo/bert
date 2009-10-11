@@ -25,8 +25,12 @@ module BERT
         when Array
           case item.first
             when :dict
-              item[1].inject({}) do |acc, x|
-                acc[convert(x[0])] = convert(x[1]); acc
+              if item[1]
+                item[1].inject({}) do |acc, x|
+                  acc[convert(x[0])] = convert(x[1]); acc
+                end
+              else
+                {}
               end
             when :bool
               item[1]

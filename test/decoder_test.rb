@@ -20,6 +20,12 @@ class DecoderTest < Test::Unit::TestCase
       assert_equal after, BERT::Decoder.convert(before)
     end
 
+    should "convert empty hashes" do
+      before = [:dict]
+      after = {}
+      assert_equal after, BERT::Decoder.convert(before)
+    end
+
     should "convert nested hashes" do
       before = [:dict, [[:foo, [:dict, [[:baz, 'bar']]]]]]
       after = {:foo => {:baz => 'bar'}}

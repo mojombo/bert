@@ -1,2 +1,6 @@
 =
+  * Bug fixes
+    * Properly decode empty dicts
+
+= 0.1.0 / 2009-10-08
   * Birthday!
