@@ -31,10 +31,10 @@ module BERT
         when Time
           [:time, item.to_i / 1_000_000, item.to_i % 1_000_000, item.usec]
         when Regexp
-          options = ''
-          options += 'i' if item.options & Regexp::IGNORECASE > 0
-          options += 'x' if item.options & Regexp::EXTENDED > 0
-          options += 'm' if item.options & Regexp::MULTILINE > 0
+          options = []
+          options << :caseless if item.options & Regexp::IGNORECASE > 0
+          options << :extended if item.options & Regexp::EXTENDED > 0
+          options << :multiline if item.options & Regexp::MULTILINE > 0
           [:regex, item.source, options]
         else
           item

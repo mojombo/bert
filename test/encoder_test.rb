@@ -67,7 +67,7 @@ class EncoderTest < Test::Unit::TestCase
 
     should "convert regexen" do
       before = /^c(a)t$/ix
-      after = [:regex, '^c(a)t$', 'ix']
+      after = [:regex, '^c(a)t$', [:caseless, :extended]]
       assert_equal after, BERT::Encoder.convert(before)
     end
 

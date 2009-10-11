@@ -51,7 +51,7 @@ class DecoderTest < Test::Unit::TestCase
     end
 
     should "convert regexen" do
-      before = [:regex, '^c(a)t$', 'ix']
+      before = [:regex, '^c(a)t$', [:caseless, :extended]]
       after = /^c(a)t$/ix
       assert_equal after, BERT::Decoder.convert(before)
     end

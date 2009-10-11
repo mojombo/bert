@@ -34,9 +34,9 @@ module BERT
               Time.at(item[1] * 1_000_000 + item[2], item[3])
             when :regex
               options = 0
-              options |= Regexp::EXTENDED if item[2] =~ /x/
-              options |= Regexp::IGNORECASE if item[2] =~ /i/
-              options |= Regexp::MULTILINE if item[2] =~ /m/
+              options |= Regexp::EXTENDED if item[2].include?(:extended)
+              options |= Regexp::IGNORECASE if item[2].include?(:caseless)
+              options |= Regexp::MULTILINE if item[2].include?(:multiline)
               Regexp.new(item[1], options)
             else
               Tuple.new(item.map { |x| convert(x) })

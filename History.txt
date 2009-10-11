@@ -1,6 +1,7 @@
 =
-  * Minor changes
+  * Major changes
     * Use {time, MegaSecs, Secs, Microsecs} for time serialization
+    * Use array of options for regex serialization
   * Tests
     * Add roundtrip tests
 
