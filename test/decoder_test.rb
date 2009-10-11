@@ -21,7 +21,7 @@ class DecoderTest < Test::Unit::TestCase
     end
 
     should "convert empty hashes" do
-      before = [:dict]
+      before = [:dict, []]
       after = {}
       assert_equal after, BERT::Decoder.convert(before)
     end
@@ -45,7 +45,7 @@ class DecoderTest < Test::Unit::TestCase
     end
 
     should "convert times" do
-      before = [:time, 1254976067, 0]
+      before = [:time, 1254, 976067, 0]
       after = Time.at(1254976067)
       assert_equal after, BERT::Decoder.convert(before)
     end

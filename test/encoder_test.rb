@@ -61,7 +61,7 @@ class EncoderTest < Test::Unit::TestCase
 
     should "convert times" do
       before = Time.at(1254976067)
-      after = [:time, 1254976067, 0]
+      after = [:time, 1254, 976067, 0]
       assert_equal after, BERT::Encoder.convert(before)
     end
 

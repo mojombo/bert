@@ -25,17 +25,13 @@ module BERT
         when Array
           case item.first
             when :dict
-              if item[1]
-                item[1].inject({}) do |acc, x|
-                  acc[convert(x[0])] = convert(x[1]); acc
-                end
-              else
-                {}
+              item[1].inject({}) do |acc, x|
+                acc[convert(x[0])] = convert(x[1]); acc
               end
             when :bool
               item[1]
             when :time
-              Time.at(item[1].to_i, item[2].to_i)
+              Time.at(item[1] * 1_000_000 + item[2], item[3])
             when :regex
               options = 0
               options |= Regexp::EXTENDED if item[2] =~ /x/

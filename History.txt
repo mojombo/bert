@@ -1,6 +1,8 @@
 =
-  * Bug fixes
-    * Properly decode empty dicts
+  * Minor changes
+    * Use {time, MegaSecs, Secs, Microsecs} for time serialization
+  * Tests
+    * Add roundtrip tests
 
 = 0.1.0 / 2009-10-08
   * Birthday!

@@ -29,7 +29,7 @@ module BERT
         when TrueClass, FalseClass
           [:bool, item.to_s.to_sym]
         when Time
-          [:time, item.to_i, item.usec]
+          [:time, item.to_i / 1_000_000, item.to_i % 1_000_000, item.usec]
         when Regexp
           options = ''
           options += 'i' if item.options & Regexp::IGNORECASE > 0
