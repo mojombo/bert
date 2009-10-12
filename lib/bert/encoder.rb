@@ -26,12 +26,14 @@ module BERT
           Erl::List.new(item.map { |x| convert(x) })
         when nil
           [:bert, :nil]
-        when TrueClass, FalseClass
-          [:bert, :bool, item.to_s.to_sym]
+        when TrueClass
+          [:bert, :true]
+        when FalseClass
+          [:bert, :false]
         when Time
           [:bert, :time, item.to_i / 1_000_000, item.to_i % 1_000_000, item.usec]
         when Regexp
-          options = []
+          options = Erl::List[]
           options << :caseless if item.options & Regexp::IGNORECASE > 0
           options << :extended if item.options & Regexp::EXTENDED > 0
           options << :multiline if item.options & Regexp::MULTILINE > 0

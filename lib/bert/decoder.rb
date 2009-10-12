@@ -43,8 +43,10 @@ module BERT
           item[2].inject({}) do |acc, x|
             acc[convert(x[0])] = convert(x[1]); acc
           end
-        when :bool
-          item[2]
+        when TrueClass
+          true
+        when FalseClass
+          false
         when :time
           Time.at(item[2] * 1_000_000 + item[3], item[4])
         when :regex

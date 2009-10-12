@@ -49,13 +49,13 @@ class EncoderTest < Test::Unit::TestCase
 
     should "convert true" do
       before = true
-      after = [:bert, :bool, :true]
+      after = [:bert, :true]
       assert_equal after, BERT::Encoder.convert(before)
     end
 
     should "convert false" do
       before = false
-      after = [:bert, :bool, :false]
+      after = [:bert, :false]
       assert_equal after, BERT::Encoder.convert(before)
     end
 
