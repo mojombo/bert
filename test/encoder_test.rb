@@ -3,32 +3,32 @@ require 'test_helper'
 class EncoderTest < Test::Unit::TestCase
   context "BERT Encoder complex type converter" do
     should "convert nil" do
-      assert_equal [:nil, :nil], BERT::Encoder.convert(nil)
+      assert_equal [:bert, :nil], BERT::Encoder.convert(nil)
     end
 
     should "convert nested nil" do
       before = [nil, [nil]]
-      after = [[:nil, :nil], [[:nil, :nil]]]
+      after = [[:bert, :nil], [[:bert, :nil]]]
       assert_equal after, BERT::Encoder.convert(before)
     end
 
     should "convert hashes" do
       before = {:foo => 'bar'}
-      after = [:dict, [[:foo, 'bar']]]
+      after = [:bert, :dict, [[:foo, 'bar']]]
       assert_equal after, BERT::Encoder.convert(before)
     end
 
     should "convert nested hashes" do
       before = {:foo => {:baz => 'bar'}}
-      after = [:dict, [[:foo, [:dict, [[:baz, "bar"]]]]]]
+      after = [:bert, :dict, [[:foo, [:bert, :dict, [[:baz, "bar"]]]]]]
       assert_equal after, BERT::Encoder.convert(before)
     end
 
     should "convert hash to tuple with array of tuples" do
       arr = BERT::Encoder.convert({:foo => 'bar'})
       assert arr.is_a?(Array)
-      assert arr[1].is_a?(Erl::List)
-      assert arr[1][0].is_a?(Array)
+      assert arr[2].is_a?(Erl::List)
+      assert arr[2][0].is_a?(Array)
     end
 
     should "convert tuple to array" do
@@ -49,25 +49,25 @@ class EncoderTest < Test::Unit::TestCase
 
     should "convert true" do
       before = true
-      after = [:bool, :true]
+      after = [:bert, :bool, :true]
       assert_equal after, BERT::Encoder.convert(before)
     end
 
     should "convert false" do
       before = false
-      after = [:bool, :false]
+      after = [:bert, :bool, :false]
       assert_equal after, BERT::Encoder.convert(before)
     end
 
     should "convert times" do
       before = Time.at(1254976067)
-      after = [:time, 1254, 976067, 0]
+      after = [:bert, :time, 1254, 976067, 0]
       assert_equal after, BERT::Encoder.convert(before)
     end
 
     should "convert regexen" do
       before = /^c(a)t$/ix
-      after = [:regex, '^c(a)t$', [:caseless, :extended]]
+      after = [:bert, :regex, '^c(a)t$', [:caseless, :extended]]
       assert_equal after, BERT::Encoder.convert(before)
     end
 

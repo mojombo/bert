@@ -19,23 +19,23 @@ module BERT
         when Hash
           pairs = Erl::List[]
           item.each_pair { |k, v| pairs << [convert(k), convert(v)] }
-          [:dict, pairs]
+          [:bert, :dict, pairs]
         when Tuple
           item.map { |x| convert(x) }
         when Array
           Erl::List.new(item.map { |x| convert(x) })
         when nil
-          [:nil, :nil]
+          [:bert, :nil]
         when TrueClass, FalseClass
-          [:bool, item.to_s.to_sym]
+          [:bert, :bool, item.to_s.to_sym]
         when Time
-          [:time, item.to_i / 1_000_000, item.to_i % 1_000_000, item.usec]
+          [:bert, :time, item.to_i / 1_000_000, item.to_i % 1_000_000, item.usec]
         when Regexp
           options = []
           options << :caseless if item.options & Regexp::IGNORECASE > 0
           options << :extended if item.options & Regexp::EXTENDED > 0
           options << :multiline if item.options & Regexp::MULTILINE > 0
-          [:regex, item.source, options]
+          [:bert, :regex, item.source, options]
         else
           item
       end
