@@ -1,4 +1,4 @@
-=
+= 0.2.0 / 2009-10-15
   * Major changes
     * Use {time, MegaSecs, Secs, Microsecs} for time serialization
     * Use array of options for regex serialization
