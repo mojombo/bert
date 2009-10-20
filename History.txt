@@ -1,3 +1,6 @@
+= 1.0.0 / 2009-10-19
+  * No changes. Production ready!
+
 = 0.2.0 / 2009-10-15
   * Major changes
     * Use {time, MegaSecs, Secs, Microsecs} for time serialization
