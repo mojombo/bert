@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{bert}
-  s.version = "0.2.0"
+  s.version = "1.0.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Tom Preston-Werner"]
-  s.date = %q{2009-10-15}
+  s.date = %q{2009-10-19}
   s.description = %q{BERT Serializiation for Ruby}
   s.email = %q{tom@mojombo.com}
   s.extra_rdoc_files = [
