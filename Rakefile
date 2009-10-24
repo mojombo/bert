@@ -12,6 +12,9 @@ begin
     gem.authors = ["Tom Preston-Werner"]
     gem.add_dependency('erlectricity', '>= 1.1.0')
     gem.add_development_dependency("thoughtbot-shoulda")
+    gem.require_paths = ["lib", "ext"]
+    gem.files.include("ext")
+    gem.extensions << 'ext/bert/c/extconf.rb'
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 rescue LoadError
@@ -19,10 +22,30 @@ rescue LoadError
 end
 
 require 'rake/testtask'
-Rake::TestTask.new(:test) do |test|
+Rake::TestTask.new(:runtests) do |test|
   test.libs << 'lib' << 'test'
   test.pattern = 'test/**/*_test.rb'
   test.verbose = true
+end
+
+task :test => :check_dependencies do
+  require 'fileutils'
+
+  puts "\nCleaning extension build files and running all specs in native ruby mode..."
+  ['rm -f ext/bert/c/*.bundle', 'rm -f ext/bert/c/*.o'].each do |cmd|
+    `#{cmd}` && puts(cmd)
+  end
+  pid = fork do
+    exec 'rake runtests'
+  end
+  Process.waitpid(pid)
+
+  puts "\nRunning `make` to build extensions and rerunning decoder specs..."
+  Dir.chdir('ext/bert/c') { `make` }
+  pid = fork do
+    exec 'rake runtests'
+  end
+  Process.waitpid(pid)
 end
 
 begin
@@ -37,8 +60,6 @@ rescue LoadError
     abort "RCov is not available. In order to run rcov, you must: sudo gem install spicycode-rcov"
   end
 end
-
-task :test => :check_dependencies
 
 task :default => :test
 

@@ -33,13 +33,13 @@ class DecoderTest < Test::Unit::TestCase
     end
 
     should "convert true" do
-      before = [:bert, true]
+      before = [:bert, :true]
       after = true
       assert_equal after, BERT::Decoder.convert(before)
     end
 
     should "convert false" do
-      before = [:bert, false]
+      before = [:bert, :false]
       after = false
       assert_equal after, BERT::Decoder.convert(before)
     end

@@ -5,20 +5,17 @@ module BERT
     #
     # Returns a Ruby object
     def self.decode(bert)
-      simple_ruby = Erlectricity::Decoder.decode(bert)
+      simple_ruby = Decode.decode(bert)
       convert(simple_ruby)
     end
 
-    # Convert Erlectricity representation of BERT complex types into
-    # corresponding Ruby types.
+    # Convert simple Ruby form into complex Ruby form.
     #   +item+ is the Ruby object to convert
     #
     # Returns the converted Ruby object
     def self.convert(item)
       case item
-        when TrueClass, FalseClass
-          item.to_s.to_sym
-        when Erl::List
+        when List
           item.map { |x| convert(x) }
         when Array
           if item[0] == :bert
@@ -43,9 +40,9 @@ module BERT
           item[2].inject({}) do |acc, x|
             acc[convert(x[0])] = convert(x[1]); acc
           end
-        when TrueClass
+        when :true
           true
-        when FalseClass
+        when :false
           false
         when :time
           Time.at(item[2] * 1_000_000 + item[3], item[4])

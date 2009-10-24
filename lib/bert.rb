@@ -1,33 +1,24 @@
 require 'rubygems'
-require 'erlectricity'
+
+$:.unshift File.join(File.dirname(__FILE__), *%w[.. ext])
+
+require 'bert/bert'
+require 'bert/types'
+
+begin
+  # try to load the C extension
+  require 'bert/c/decode'
+rescue LoadError
+  # fall back on the pure ruby version
+  require 'bert/decode'
+end
+
+require 'bert/encode'
 
 require 'bert/encoder'
 require 'bert/decoder'
 
-module BERT
-  def self.encode(ruby)
-    Encoder.encode(ruby)
-  end
-
-  def self.decode(bert)
-    Decoder.decode(bert)
-  end
-
-  def self.ebin(str)
-    bytes = []
-    str.each_byte { |b| bytes << b.to_s }
-    "<<" + bytes.join(',') + ">>"
-  end
-end
-
-module BERT
-  class Tuple < Array
-    def inspect
-      "t#{super}"
-    end
-  end
-end
-
+# Global method for specifying that an array should be encoded as a tuple.
 def t
   BERT::Tuple
 end

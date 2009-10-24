@@ -1,3 +1,7 @@
+=
+  * Major Changes
+    * Remove reliance on Erlectricity.
+
 = 1.0.0 / 2009-10-19
   * No changes. Production ready!
 
