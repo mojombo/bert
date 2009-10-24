@@ -10,7 +10,6 @@ begin
     gem.email = "tom@mojombo.com"
     gem.homepage = "http://github.com/mojombo/bert"
     gem.authors = ["Tom Preston-Werner"]
-    gem.add_dependency('erlectricity', '>= 1.1.0')
     gem.add_development_dependency("thoughtbot-shoulda")
     gem.require_paths = ["lib", "ext"]
     gem.files.include("ext")
