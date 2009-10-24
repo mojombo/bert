@@ -1,13 +1,14 @@
 BERT
 ====
 
-BERT is a BERT (Binary ERlang Term) serialization library for Ruby. It can
+A BERT (Binary ERlang Term) serialization library for Ruby. It can
 encode Ruby objects into BERT format and decode BERT binaries into Ruby
 objects.
 
 See the BERT specification at [bert-rpc.org](http://bert-rpc.org).
 
-Instances of the following Ruby classes will be automatically converted to the proper simple BERT type:
+Instances of the following Ruby classes will be automatically converted to the
+proper simple BERT type:
 
 * Fixnum
 * Float
@@ -15,7 +16,8 @@ Instances of the following Ruby classes will be automatically converted to the p
 * Array
 * String
 
-Instances of the following Ruby classes will be automatically converted to the proper complex BERT type:
+Instances of the following Ruby classes will be automatically converted to the
+proper complex BERT type:
 
 * NilClass
 * TrueClass
@@ -24,10 +26,11 @@ Instances of the following Ruby classes will be automatically converted to the p
 * Time
 * Regexp
 
-To designate tuples, simply prefix an Array literal with a `t` or use the BERT::Tuple class:
+To designate tuples, simply prefix an Array literal with a `t` or use the
+BERT::Tuple class:
 
     t[:foo, [1, 2, 3]]
-    BERT::Tuple.new([:foo, [1, 2, 3]])
+    BERT::Tuple[:foo, [1, 2, 3]]
 
 Both of these will be converted to (in Erlang syntax):
 
