@@ -150,25 +150,81 @@ module BERT
 
     def read_small_tuple
       fail("Invalid Type, not a small tuple") unless read_1 == SMALL_TUPLE
-      arity = read_1
-      (0...arity).map { |i| read_any_raw }
+      read_tuple(read_1)
     end
 
     def read_large_tuple
       fail("Invalid Type, not a small tuple") unless read_1 == LARGE_TUPLE
-      arity = read_4
-      (0...arity).map { |i| read_any_raw }
+      read_tuple(read_4)
+    end
+
+    def read_tuple(arity)
+      tuple = Tuple.new(arity)
+      if arity > 0
+        tag = read_any_raw
+        if tag == :bert
+          read_complex_type(arity)
+        else
+          tuple[0] = tag
+          (arity - 1).times { |i| tuple[i + 1] = read_any_raw }
+          tuple
+        end
+      else
+        tuple
+      end
+    end
+
+    def read_complex_type(arity)
+      case read_any_raw
+        when :nil
+          nil
+        when :true
+          true
+        when :false
+          false
+        when :time
+          Time.at(read_any_raw * 1_000_000 + read_any_raw, read_any_raw)
+        when :regex
+          source = read_any_raw
+          opts = read_any_raw
+          options = 0
+          options |= Regexp::EXTENDED if opts.include?(:extended)
+          options |= Regexp::IGNORECASE if opts.include?(:caseless)
+          options |= Regexp::MULTILINE if opts.include?(:multiline)
+          Regexp.new(source, options)
+        when :dict
+          read_dict
+        else
+          nil
+      end
+    end
+
+    def read_dict
+      type = read_1
+      fail("Invalid dict spec, not an erlang list") unless [LIST, NIL].include?(type)
+      if type == LIST
+        length = read_4
+      else
+        length = 0
+      end
+      hash = {}
+      length.times do |i|
+        pair = read_any_raw
+        hash[pair[0]] = pair[1]
+      end
+      read_1 if type == LIST
+      hash
     end
 
     def read_nil
       fail("Invalid Type, not a nil list") unless read_1 == NIL
-      List.new([])
+      []
     end
 
     def read_erl_string
       fail("Invalid Type, not an erlang string") unless read_1 == STRING
       length = read_2
-      List.new(read_string(length).unpack('C' * length))
+      read_string(length).unpack('C' * length)
     end
 
     def read_list
@@ -176,7 +232,7 @@ module BERT
       length = read_4
       list = (0...length).map { |i| read_any_raw }
       read_1
-      List.new(list)
+      list
     end
 
     def read_bin

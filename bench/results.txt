@@ -33,3 +33,9 @@ Simple C encoder / Ruby decoder
   BERT large  2.270000   0.550000   2.820000 (  3.029141)
   BERT complex  8.680000   0.040000   8.720000 (  9.097990)
 
+Smarter Ruby decoder
+
+  BERT tiny  0.090000   0.000000   0.090000 (  0.087387)
+  BERT small  0.790000   0.000000   0.790000 (  0.850270)
+  BERT large  4.180000   0.600000   4.780000 (  4.943164)
+  BERT complex 18.410000   0.090000  18.500000 ( 19.187804)
