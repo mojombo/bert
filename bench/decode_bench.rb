@@ -33,24 +33,24 @@ small_encoded_ruby = Marshal.dump(small)
 large_encoded_ruby = Marshal.dump(large)
 complex_encoded_ruby = Marshal.dump(complex)
 
-Benchmark.bm do |bench|
-  bench.report("BERT tiny") {ITER.times {BERT.decode(tiny_encoded_bert)}}
-  bench.report("BERT small") {ITER.times {BERT.decode(small_encoded_bert)}}
-  bench.report("BERT large") {ITER.times {BERT.decode(large_encoded_bert)}}
+Benchmark.bm(13) do |bench|
+  bench.report("BERT tiny")    {ITER.times {BERT.decode(tiny_encoded_bert)}}
+  bench.report("BERT small")   {ITER.times {BERT.decode(small_encoded_bert)}}
+  bench.report("BERT large")   {ITER.times {BERT.decode(large_encoded_bert)}}
   bench.report("BERT complex") {ITER.times {BERT.decode(complex_encoded_bert)}}
   puts
-  bench.report("JSON tiny") {ITER.times {JSON.load(tiny_encoded_json)}}
-  bench.report("JSON small") {ITER.times {JSON.load(small_encoded_json)}}
-  bench.report("JSON large") {ITER.times {JSON.load(large_encoded_json)}}
+  bench.report("JSON tiny")    {ITER.times {JSON.load(tiny_encoded_json)}}
+  bench.report("JSON small")   {ITER.times {JSON.load(small_encoded_json)}}
+  bench.report("JSON large")   {ITER.times {JSON.load(large_encoded_json)}}
   bench.report("JSON complex") {ITER.times {JSON.load(complex_encoded_json)}}
   puts
-  bench.report("YAJL tiny") {ITER.times {Yajl::Parser.parse(tiny_encoded_yajl)}}
-  bench.report("YAJL small") {ITER.times {Yajl::Parser.parse(small_encoded_yajl)}}
-  bench.report("YAJL large") {ITER.times {Yajl::Parser.parse(large_encoded_yajl)}}
+  bench.report("YAJL tiny")    {ITER.times {Yajl::Parser.parse(tiny_encoded_yajl)}}
+  bench.report("YAJL small")   {ITER.times {Yajl::Parser.parse(small_encoded_yajl)}}
+  bench.report("YAJL large")   {ITER.times {Yajl::Parser.parse(large_encoded_yajl)}}
   bench.report("YAJL complex") {ITER.times {Yajl::Parser.parse(complex_encoded_yajl)}}
   puts
-  bench.report("Ruby tiny") {ITER.times {Marshal.load(tiny_encoded_ruby)}}
-  bench.report("Ruby small") {ITER.times {Marshal.load(small_encoded_ruby)}}
-  bench.report("Ruby large") {ITER.times {Marshal.load(large_encoded_ruby)}}
+  bench.report("Ruby tiny")    {ITER.times {Marshal.load(tiny_encoded_ruby)}}
+  bench.report("Ruby small")   {ITER.times {Marshal.load(small_encoded_ruby)}}
+  bench.report("Ruby large")   {ITER.times {Marshal.load(large_encoded_ruby)}}
   bench.report("Ruby complex") {ITER.times {Marshal.load(complex_encoded_ruby)}}
 end
