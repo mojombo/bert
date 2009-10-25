@@ -27,7 +27,7 @@ class EncoderTest < Test::Unit::TestCase
     should "convert hash to tuple with array of tuples" do
       arr = BERT::Encoder.convert({:foo => 'bar'})
       assert arr.is_a?(Array)
-      assert arr[2].is_a?(BERT::List)
+      assert arr[2].is_a?(Array)
       assert arr[2][0].is_a?(Array)
     end
 
@@ -38,13 +38,13 @@ class EncoderTest < Test::Unit::TestCase
 
     should "convert array to erl list" do
       list = BERT::Encoder.convert([1, 2])
-      assert list.is_a?(BERT::List)
+      assert list.is_a?(Array)
     end
 
     should "convert an array in a tuple" do
       arrtup = BERT::Encoder.convert(t[:foo, [1, 2]])
       assert arrtup.is_a?(Array)
-      assert arrtup[1].is_a?(BERT::List)
+      assert arrtup[1].is_a?(Array)
     end
 
     should "convert true" do
@@ -74,9 +74,9 @@ class EncoderTest < Test::Unit::TestCase
     should "properly convert types" do
       ruby = t[:user, {:name => 'TPW'}, [/cat/i, 9.9], nil, true, false, :true, :false]
       cruby = BERT::Encoder.convert(ruby)
-      assert cruby.instance_of?(Array)
+      assert cruby.instance_of?(BERT::Tuple)
       assert cruby[0].instance_of?(Symbol)
-      assert cruby[1].instance_of?(Array)
+      assert cruby[1].instance_of?(BERT::Tuple)
     end
 
     should "leave other stuff alone" do

@@ -13,12 +13,6 @@ module BERT
     "<<" + bytes.join(',') + ">>"
   end
 
-  class List < Array
-    def inspect
-      "l#{super}"
-    end
-  end
-
   class Tuple < Array
     def inspect
       "t#{super}"

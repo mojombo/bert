@@ -1,64 +1,76 @@
 require 'test_helper'
 
 class DecoderTest < Test::Unit::TestCase
-  context "BERT Decoder complex type converter" do
-    # should "convert nil" do
-    #   before = t[:bert, :nil]
-    #   after = nil
-    #   assert_equal after, BERT::Decoder.convert(before)
-    # end
-    # 
-    # should "convert nested nil" do
-    #   before = [t[:bert, :nil], [t[:bert, :nil]]]
-    #   after = [nil, [nil]]
-    #   assert_equal after, BERT::Decoder.convert(before)
-    # end
-    # 
-    # should "convert hashes" do
-    #   before = t[:bert, :dict, [[:foo, 'bar']]]
-    #   after = {:foo => 'bar'}
-    #   assert_equal after, BERT::Decoder.convert(before)
-    # end
-    # 
-    # should "convert empty hashes" do
-    #   before = t[:bert, :dict, []]
-    #   after = {}
-    #   assert_equal after, BERT::Decoder.convert(before)
-    # end
-    # 
-    # should "convert nested hashes" do
-    #   before = t[:bert, :dict, [[:foo, t[:bert, :dict, [[:baz, 'bar']]]]]]
-    #   after = {:foo => {:baz => 'bar'}}
-    #   assert_equal after, BERT::Decoder.convert(before)
-    # end
+  BERT_NIL = [131,104,2,100,0,4,98,101,114,116,100,0,3,110,105,108].pack('c*')
+  BERT_TRUE = [131,104,2,100,0,4,98,101,114,116,100,0,4,116,114,117,101].pack('c*')
+  BERT_FALSE = [131,104,2,100,0,4,98,101,114,116,100,0,5,102,97,108,115,101].pack('c*')
 
-    should "convert true" do
-      # {bert, true}
-      bert = [131,104,2,100,0,4,98,101,114,116,100,0,4,116,114,117,101].pack('c*')
-      assert_equal true, BERT::Decoder.decode(bert)
+  context "BERT Decoder complex type converter" do
+    should "convert nil" do
+      assert_equal nil, BERT::Decoder.decode(BERT_NIL)
     end
 
-    # should "convert false" do
-    #   before = t[:bert, :false]
-    #   after = false
-    #   assert_equal after, BERT::Decoder.convert(before)
-    # end
-    # 
-    # should "convert times" do
-    #   before = t[:bert, :time, 1254, 976067, 0]
-    #   after = Time.at(1254976067)
-    #   assert_equal after, BERT::Decoder.convert(before)
-    # end
-    # 
-    # should "convert regexen" do
-    #   before = t[:bert, :regex, '^c(a)t$', [:caseless, :extended]]
-    #   after = /^c(a)t$/ix
-    #   assert_equal after, BERT::Decoder.convert(before)
-    # end
-    # 
-    # should "leave other stuff alone" do
-    #   before = [1, 2.0, [:foo, 'bar']]
-    #   assert_equal before, BERT::Decoder.convert(before)
-    # end
+    should "convert nested nil" do
+      bert = [131,108,0,0,0,2,104,2,100,0,4,98,101,114,116,100,0,3,110,105,
+              108,108,0,0,0,1,104,2,100,0,4,98,101,114,116,100,0,3,110,105,
+              108,106,106].pack('c*')
+      assert_equal [nil, [nil]], BERT::Decoder.decode(bert)
+    end
+
+    should "convert hashes" do
+      bert = [131,104,3,100,0,4,98,101,114,116,100,0,4,100,105,99,116,108,
+              0,0,0,1,104,2,100,0,3,102,111,111,109,0,0,0,3,98,97,114,
+              106].pack('c*')
+      after = {:foo => 'bar'}
+      assert_equal after, BERT::Decoder.decode(bert)
+    end
+
+    should "convert empty hashes" do
+      bert = [131,104,3,100,0,4,98,101,114,116,100,0,4,100,105,99,116,
+              106].pack('c*')
+      after = {}
+      assert_equal after, BERT::Decoder.decode(bert)
+    end
+
+    should "convert nested hashes" do
+      bert = [131,104,3,100,0,4,98,101,114,116,100,0,4,100,105,99,116,108,0,
+              0,0,1,104,2,100,0,3,102,111,111,104,3,100,0,4,98,101,114,116,
+              100,0,4,100,105,99,116,108,0,0,0,1,104,2,100,0,3,98,97,122,109,
+              0,0,0,3,98,97,114,106,106].pack('c*')
+      after = {:foo => {:baz => 'bar'}}
+      assert_equal after, BERT::Decoder.decode(bert)
+    end
+
+    should "convert true" do
+      assert_equal true, BERT::Decoder.decode(BERT_TRUE)
+    end
+
+    should "convert false" do
+      assert_equal false, BERT::Decoder.decode(BERT_FALSE)
+    end
+
+    should "convert times" do
+      bert = [131,104,5,100,0,4,98,101,114,116,100,0,4,116,105,109,101,98,0,
+              0,4,230,98,0,14,228,195,97,0].pack('c*')
+      after = Time.at(1254976067)
+      assert_equal after, BERT::Decoder.decode(bert)
+    end
+
+    should "convert regexen" do
+      bert = [131,104,4,100,0,4,98,101,114,116,100,0,5,114,101,103,101,120,
+              109,0,0,0,7,94,99,40,97,41,116,36,108,0,0,0,2,100,0,8,99,97,
+              115,101,108,101,115,115,100,0,8,101,120,116,101,110,100,101,
+              100,106].pack('c*')
+      after = /^c(a)t$/ix
+      assert_equal after, BERT::Decoder.decode(bert)
+    end
+
+    should "leave other stuff alone" do
+      bert = [131,108,0,0,0,3,97,1,99,50,46,48,48,48,48,48,48,48,48,48,48,48,
+              48,48,48,48,48,48,48,48,48,101,43,48,48,0,0,0,0,0,108,0,0,0,2,
+              100,0,3,102,111,111,109,0,0,0,3,98,97,114,106,106].pack('c*')
+      after = [1, 2.0, [:foo, 'bar']]
+      assert_equal after, BERT::Decoder.decode(bert)
+    end
   end
 end

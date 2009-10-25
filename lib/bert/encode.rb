@@ -24,8 +24,8 @@ module BERT
         when Symbol then write_symbol(obj)
         when Fixnum, Bignum then write_fixnum(obj)
         when Float then write_float(obj)
-        when BERT::List then write_list(obj)
-        when Array then write_tuple(obj)
+        when Tuple then write_tuple(obj)
+        when Array then write_list(obj)
         when String then write_binary(obj)
         else
           fail(obj)

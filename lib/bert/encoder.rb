@@ -16,27 +16,27 @@ module BERT
     def self.convert(item)
       case item
         when Hash
-          pairs = List[]
-          item.each_pair { |k, v| pairs << [convert(k), convert(v)] }
-          [:bert, :dict, pairs]
+          pairs = []
+          item.each_pair { |k, v| pairs << t[convert(k), convert(v)] }
+          t[:bert, :dict, pairs]
         when Tuple
-          item.map { |x| convert(x) }
+          Tuple.new(item.map { |x| convert(x) })
         when Array
-          List.new(item.map { |x| convert(x) })
+          item.map { |x| convert(x) }
         when nil
-          [:bert, :nil]
+          t[:bert, :nil]
         when TrueClass
-          [:bert, :true]
+          t[:bert, :true]
         when FalseClass
-          [:bert, :false]
+          t[:bert, :false]
         when Time
-          [:bert, :time, item.to_i / 1_000_000, item.to_i % 1_000_000, item.usec]
+          t[:bert, :time, item.to_i / 1_000_000, item.to_i % 1_000_000, item.usec]
         when Regexp
-          options = List[]
+          options = []
           options << :caseless if item.options & Regexp::IGNORECASE > 0
           options << :extended if item.options & Regexp::EXTENDED > 0
           options << :multiline if item.options & Regexp::MULTILINE > 0
-          [:bert, :regex, item.source, options]
+          t[:bert, :regex, item.source, options]
         else
           item
       end
