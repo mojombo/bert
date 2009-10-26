@@ -27,6 +27,16 @@ Rake::TestTask.new(:runtests) do |test|
   test.verbose = true
 end
 
+task :make do
+  Dir.chdir('ext/bert/c') { `make` }
+end
+
+task :clean do
+  ['rm -f ext/bert/c/*.bundle', 'rm -f ext/bert/c/*.o'].each do |cmd|
+    `#{cmd}` && puts(cmd)
+  end
+end
+
 task :test => :check_dependencies do
   require 'fileutils'
 

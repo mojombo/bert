@@ -429,7 +429,7 @@ VALUE method_decode(VALUE klass, VALUE rString) {
 }
 
 VALUE method_impl(VALUE klass) {
-  return rb_str_new("C", 2);
+  return rb_str_new("C", 1);
 }
 
 void Init_decode() {
