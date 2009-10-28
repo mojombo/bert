@@ -72,5 +72,10 @@ class DecoderTest < Test::Unit::TestCase
       after = [1, 2.0, [:foo, 'bar']]
       assert_equal after, BERT::Decoder.decode(bert)
     end
+
+    should "handle massive binaries" do
+      bert = [131,109,0,128,0,0].pack('c*') + ('a' * (8 * 1024 * 1024))
+      assert_equal (8 * 1024 * 1024), BERT::Decoder.decode(bert).size
+    end
   end
 end
