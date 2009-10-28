@@ -5,13 +5,14 @@
 
 Gem::Specification.new do |s|
   s.name = %q{bert}
-  s.version = "1.0.0"
+  s.version = "1.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Tom Preston-Werner"]
-  s.date = %q{2009-10-19}
+  s.date = %q{2009-10-28}
   s.description = %q{BERT Serializiation for Ruby}
   s.email = %q{tom@mojombo.com}
+  s.extensions = ["ext/bert/c/extconf.rb"]
   s.extra_rdoc_files = [
     "LICENSE",
      "README.md"
@@ -24,10 +25,20 @@ Gem::Specification.new do |s|
      "README.md",
      "Rakefile",
      "VERSION",
+     "bench/bench.rb",
+     "bench/decode_bench.rb",
+     "bench/encode_bench.rb",
+     "bench/results.txt",
      "bert.gemspec",
+     "ext/bert/c/decode.c",
+     "ext/bert/c/extconf.rb",
      "lib/bert.rb",
+     "lib/bert/bert.rb",
+     "lib/bert/decode.rb",
      "lib/bert/decoder.rb",
+     "lib/bert/encode.rb",
      "lib/bert/encoder.rb",
+     "lib/bert/types.rb",
      "test/bert_test.rb",
      "test/decoder_test.rb",
      "test/encoder_test.rb",
@@ -35,7 +46,7 @@ Gem::Specification.new do |s|
   ]
   s.homepage = %q{http://github.com/mojombo/bert}
   s.rdoc_options = ["--charset=UTF-8"]
-  s.require_paths = ["lib"]
+  s.require_paths = ["lib", "ext"]
   s.rubygems_version = %q{1.3.5}
   s.summary = %q{BERT Serializiation for Ruby}
   s.test_files = [
@@ -50,14 +61,11 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<erlectricity>, [">= 1.1.0"])
       s.add_development_dependency(%q<thoughtbot-shoulda>, [">= 0"])
     else
-      s.add_dependency(%q<erlectricity>, [">= 1.1.0"])
       s.add_dependency(%q<thoughtbot-shoulda>, [">= 0"])
     end
   else
-    s.add_dependency(%q<erlectricity>, [">= 1.1.0"])
     s.add_dependency(%q<thoughtbot-shoulda>, [">= 0"])
   end
 end
