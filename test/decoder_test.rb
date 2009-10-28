@@ -73,6 +73,11 @@ class DecoderTest < Test::Unit::TestCase
       assert_equal after, BERT::Decoder.decode(bert)
     end
 
+    should "handle bignums" do
+      bert = [131,110,8,0,0,0,232,137,4,35,199,138].pack('c*')
+      assert_equal 10_000_000_000_000_000_000, BERT::Decoder.decode(bert)
+    end
+
     should "handle bytelists" do
       bert = [131,104,3,100,0,3,102,111,111,107,0,2,97,97,100,0,3,98,97,114].pack('c*')
       assert_equal t[:foo, [97, 97], :bar], BERT::Decoder.decode(bert)

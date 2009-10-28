@@ -79,6 +79,11 @@ class EncoderTest < Test::Unit::TestCase
       assert cruby[1].instance_of?(BERT::Tuple)
     end
 
+    should "handle bignums" do
+      bert = [131,110,8,0,0,0,232,137,4,35,199,138].pack('c*')
+      assert_equal bert, BERT::Encoder.encode(10_000_000_000_000_000_000)
+    end
+
     should "leave other stuff alone" do
       before = [1, 2.0, [:foo, 'bar']]
       assert_equal before, BERT::Encoder.convert(before)
