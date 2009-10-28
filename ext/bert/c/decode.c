@@ -76,7 +76,7 @@ unsigned int read_4(unsigned char **pData) {
 
 // tuples
 
-VALUE read_tuple(unsigned char **pData, int arity);
+VALUE read_tuple(unsigned char **pData, unsigned int arity);
 
 VALUE read_dict_pair(unsigned char **pData) {
   if(read_1(pData) != ERL_SMALL_TUPLE) {
@@ -98,7 +98,7 @@ VALUE read_dict(unsigned char **pData) {
     rb_raise(rb_eStandardError, "Invalid dict spec, not an erlang list");
   }
 
-  int length = 0;
+  unsigned int length = 0;
   if(type == ERL_LIST) {
     length = read_4(pData);
   }
@@ -155,7 +155,7 @@ VALUE read_complex_type(unsigned char **pData, int arity) {
   }
 }
 
-VALUE read_tuple(unsigned char **pData, int arity) {
+VALUE read_tuple(unsigned char **pData, unsigned int arity) {
   if(arity > 0) {
     VALUE tag = read_any_raw(pData);
     if(SYM2ID(tag) == rb_intern("bert")) {
@@ -188,7 +188,7 @@ VALUE read_large_tuple(unsigned char **pData) {
     rb_raise(rb_eStandardError, "Invalid Type, not a large tuple");
   }
 
-  int arity = read_4(pData);
+  unsigned int arity = read_4(pData);
   return read_tuple(pData, arity);
 }
 
@@ -199,7 +199,7 @@ VALUE read_list(unsigned char **pData) {
     rb_raise(rb_eStandardError, "Invalid Type, not an erlang list");
   }
 
-  int size = read_4(pData);
+  unsigned int size = read_4(pData);
 
   VALUE array = rb_ary_new2(size);
 
@@ -215,7 +215,7 @@ VALUE read_list(unsigned char **pData) {
 
 // primitives
 
-void read_string_raw(unsigned char *dest, unsigned char **pData, int length) {
+void read_string_raw(unsigned char *dest, unsigned char **pData, unsigned int length) {
   memcpy((char *) dest, (char *) *pData, length);
   *(dest + length) = (unsigned char) 0;
   *pData += length;
@@ -226,7 +226,7 @@ VALUE read_bin(unsigned char **pData) {
     rb_raise(rb_eStandardError, "Invalid Type, not an erlang binary");
   }
 
-  int length = read_4(pData);
+  unsigned int length = read_4(pData);
 
   unsigned char buf[length + 1];
   read_string_raw(buf, pData, length);
