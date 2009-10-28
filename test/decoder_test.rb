@@ -73,6 +73,11 @@ class DecoderTest < Test::Unit::TestCase
       assert_equal after, BERT::Decoder.decode(bert)
     end
 
+    should "handle bytelists" do
+      bert = [131,104,3,100,0,3,102,111,111,107,0,2,97,97,100,0,3,98,97,114].pack('c*')
+      assert_equal t[:foo, [97, 97], :bar], BERT::Decoder.decode(bert)
+    end
+
     should "handle massive binaries" do
       bert = [131,109,0,128,0,0].pack('c*') + ('a' * (8 * 1024 * 1024))
       assert_equal (8 * 1024 * 1024), BERT::Decoder.decode(bert).size

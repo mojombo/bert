@@ -84,11 +84,11 @@ VALUE read_dict_pair(unsigned char **pData) {
   }
 
   int arity = read_1(pData);
-  
+
   if(arity != 2) {
     rb_raise(rb_eStandardError, "Invalid dict pair, not a 2-tuple");
   }
-  
+
   return read_tuple(pData, arity);
 }
 
@@ -242,15 +242,12 @@ VALUE read_string(unsigned char **pData) {
   }
 
   int length = read_2(pData);
-
-  unsigned char buf[length + 1];
-  read_string_raw(buf, pData, length);
-
   VALUE array = rb_ary_new2(length);
 
   int i = 0;
   for(i; i < length; ++i) {
-    rb_ary_store(array, i, INT2NUM(*(buf + i)));
+    rb_ary_store(array, i, INT2NUM(**pData));
+    *pData += 1;
   }
 
   return array;
