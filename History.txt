@@ -1,6 +1,11 @@
-=
+= 1.1.0 / 2009-10-27
   * Major Changes
     * Remove reliance on Erlectricity.
+  * Bug fixes
+    * Fix unsigned int problem in C decoder
+    * Fix stack overflow segfault in C binary decoder for > 8MB binaries
+    * Optimize C bytelist decoder
+    * Fix bignum encoding
 
 = 1.0.0 / 2009-10-19
   * No changes. Production ready!
