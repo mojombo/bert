@@ -228,10 +228,8 @@ VALUE read_bin(unsigned char **pData) {
 
   unsigned int length = read_4(pData);
 
-  unsigned char* buf = malloc(length + 1);
-  read_string_raw(buf, pData, length);
-  VALUE rStr = rb_str_new((char *) buf, length);
-  free(buf);
+  VALUE rStr = rb_str_new((char *) *pData, length);
+  *pData += length;
 
   return rStr;
 }
