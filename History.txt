@@ -1,3 +1,7 @@
+=
+  * Bug fixes
+    * require 'stringio'
+
 = 1.1.0 / 2009-10-27
   * Major Changes
     * Remove reliance on Erlectricity.

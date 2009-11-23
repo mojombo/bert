@@ -1,5 +1,7 @@
 require 'rubygems'
 
+require 'stringio'
+
 $:.unshift File.join(File.dirname(__FILE__), *%w[.. ext])
 
 require 'bert/bert'
