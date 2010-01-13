@@ -1,6 +1,7 @@
 =
   * Bug fixes
     * require 'stringio'
+    * Fix number encoding problem on 32 bit arch
 
 = 1.1.0 / 2009-10-27
   * Major Changes
