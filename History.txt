@@ -1,4 +1,4 @@
-=
+= 1.1.1 / 2010-01-12
   * Bug fixes
     * require 'stringio'
     * Fix number encoding problem on 32 bit arch
