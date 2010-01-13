@@ -44,6 +44,8 @@ class BertTest < Test::Unit::TestCase
       dd << {:a => 1, :b => 2}
       dd << Time.now
       dd << /^c(a)t$/i
+      
+      dd << 256**256 - 1
 
       dd << :true
       dd << :false
