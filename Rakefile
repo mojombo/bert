@@ -28,7 +28,7 @@ Rake::TestTask.new(:runtests) do |test|
 end
 
 task :make do
-  Dir.chdir('ext/bert/c') { `make` }
+  Dir.chdir('ext/bert/c') { `ruby extconf.rb`; `make` }
 end
 
 task :clean do
@@ -50,7 +50,7 @@ task :test => :check_dependencies do
   Process.waitpid(pid)
 
   puts "\nRunning `make` to build extensions and rerunning decoder specs..."
-  Dir.chdir('ext/bert/c') { `make` }
+  Dir.chdir('ext/bert/c') { `ruby extconf.rb`; `make` }
   pid = fork do
     exec 'rake runtests'
   end
