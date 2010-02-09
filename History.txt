@@ -1,4 +1,4 @@
-=
+= 1.1.2 / 2010-02-08
   * Bug fixes
     * Fix bignum handling on 256 byte boundary
     * Remove unnecessary rubygems require
