@@ -11,9 +11,14 @@ begin
     gem.homepage = "http://github.com/mojombo/bert"
     gem.authors = ["Tom Preston-Werner"]
     gem.add_development_dependency("thoughtbot-shoulda")
-    gem.require_paths = ["lib", "ext"]
-    gem.files.include("ext")
-    gem.extensions << 'ext/bert/c/extconf.rb'
+    if ENV["JAVA"]
+      gem.extensions = nil
+      gem.platform = 'java'
+    else
+      gem.require_paths = ["lib", "ext"]
+      gem.files.include("ext")
+      gem.extensions << 'ext/bert/c/extconf.rb'
+    end
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 rescue LoadError
