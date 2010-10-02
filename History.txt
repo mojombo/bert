@@ -1,3 +1,9 @@
+= 1.2.0 / 2010-10-02
+  * Minor Changes
+    * OTP-8540 (http://erlang.org/download/otp_src_R14B.readme):
+      "External format of integers changed to make full use of
+      all 32 bits of INTEGER_EXT"
+
 = 1.1.2 / 2010-02-08
   * Bug fixes
     * Fix bignum handling on 256 byte boundary
