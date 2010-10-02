@@ -15,7 +15,9 @@ module BERT
     FUN = 117
     NEW_FUN = 112
     MAGIC = 131
-    MAX_INT = (1 << 27) -1
-    MIN_INT = -(1 << 27)
+    MAX_INT = (1 << 31) - 1
+    MIN_INT = -(1 << 31)
+    RB_MAX_FIXNUM = (1 << 30) - 1
+    RB_MIN_FIXNUM = -(1 << 30)
   end
 end

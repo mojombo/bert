@@ -14,6 +14,8 @@
 #define ERL_STRING        107
 #define ERL_LIST          108
 #define ERL_BIN           109
+#define RB_MAX_FIXNUM     (1 << 30) - 1
+#define RB_MIN_FIXNUM     -(1 << 30)
 
 static VALUE mBERT;
 static VALUE cDecode;
@@ -287,7 +289,10 @@ VALUE read_int(unsigned char **pData) {
     value = (value - ((long long) 1 << 32));
   }
 
-  return INT2FIX(value);
+  if(value < RB_MIN_FIXNUM || value > RB_MAX_FIXNUM)
+       return INT2NUM(value);
+  else
+       return INT2FIX(value);
 }
 
 VALUE read_small_bignum(unsigned char **pData) {

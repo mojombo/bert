@@ -113,7 +113,11 @@ module BERT
       value = read_4
       negative = (value >> 31)[0] == 1
       value = (value - (1 << 32)) if negative
-      value = Fixnum.induced_from(value)
+      if value < RB_MIN_FIXNUM or value > RB_MAX_FIXNUM
+           value = Bignum.induced_from(value)
+      else
+           value = Fixnum.induced_from(value)
+      end
     end
 
     def read_small_bignum
