@@ -49,9 +49,9 @@ Usage
     require 'bert'
     
     bert = BERT.encode(t[:user, {:name => 'TPW', :nick => 'mojombo'}])
-    # => "\203h\002d\000\004userh\002d\000\004dictl\000\000\000\002h\002d
-          \000\004namem\000\000\000\003TPWh\002d\000\004nickm\000\000\000
-          \amojomboj"
+    # => "\203h\002d\000\004userh\003d\000\004bertd\000\004dictl\000\000\
+          000\002h\002d\000\004namem\000\000\000\003TPWh\002d\000\004nickm\
+          000\000\000\amojomboj"
     
     BERT.decode(bert)
     # => t[:user, {:name=>"TPW", :nick=>"mojombo"}]
