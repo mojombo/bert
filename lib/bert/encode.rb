@@ -11,7 +11,13 @@ module BERT
     def self.encode(data)
       io = StringIO.new
       self.new(io).write_any(data)
-      io.string
+
+      # set correct encoding type
+      if io.string.respond_to?(:force_encoding)
+        io.string.force_encoding("ASCII-8BIT")
+      else
+        io.string
+      end
     end
 
     def write_any obj
