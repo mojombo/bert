@@ -1,4 +1,6 @@
 #include "ruby.h"
+#include <stdint.h>
+#include <netinet/in.h>
 
 #define ERL_SMALL_INT     97
 #define ERL_INT           98
@@ -342,7 +344,8 @@ static VALUE bert_read_int(struct bert_buf *buf)
 
 static VALUE bert_buf_tobignum(struct bert_buf *buf, uint8_t sign, uint32_t bin_digits)
 {
-	long *bin_buf = NULL;
+#ifdef BERT_FAST_BIGNUM
+	uint32_t *bin_buf = NULL;
 	VALUE rb_num;
 	uint32_t round_size;
 
@@ -355,7 +358,7 @@ static VALUE bert_buf_tobignum(struct bert_buf *buf, uint8_t sign, uint32_t bin_
 	bin_buf = xmalloc(round_size);
 
 	memcpy(bin_buf, buf->data, bin_digits);
-	memset(bin_buf + bin_digits, 0x0, round_size - bin_digits);
+	memset((char *)bin_buf + bin_digits, 0x0, round_size - bin_digits);
 
 	/* Make Ruby unpack the string internally.
 	 * this is significantly faster than adding
@@ -367,6 +370,40 @@ static VALUE bert_buf_tobignum(struct bert_buf *buf, uint8_t sign, uint32_t bin_
 
 	free(bin_buf);
 	return rb_num;
+#else
+	/**
+	 * Slower bignum serialization; convert to a base16
+	 * string and then let ruby parse it internally.
+	 *
+	 * We're shipping with this by default because
+	 * `rb_big_unpack` is not trustworthy
+	 */
+	static const char to_hex[] = "0123456789abcdef";
+	char *num_str = NULL, *ptr;
+	VALUE rb_num;
+	int32_t i;
+
+	bert_buf_ensure(buf, bin_digits);
+
+	/* 2 digits per byte + sign + trailing null */
+	num_str = ptr = xmalloc((bin_digits * 2) + 2);
+
+	*ptr++ = sign ? '-' : '+';
+
+	for (i = (int32_t)bin_digits - 1; i >= 0; --i) {
+		uint8_t val = buf->data[i];
+		*ptr++ = to_hex[val >> 4];
+		*ptr++ = to_hex[val & 0xf];
+	}
+
+	*ptr = 0;
+	buf->data += bin_digits;
+
+	rb_num = rb_cstr_to_inum(num_str, 16, 1);
+	free(num_str);
+
+	return rb_num;
+#endif
 }
 
 VALUE bert_read_sbignum(struct bert_buf *buf)
