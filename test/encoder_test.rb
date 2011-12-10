@@ -82,6 +82,9 @@ class EncoderTest < Test::Unit::TestCase
     should "handle bignums" do
       bert = [131,110,8,0,0,0,232,137,4,35,199,138].pack('c*')
       assert_equal bert, BERT::Encoder.encode(10_000_000_000_000_000_000)
+
+      bert = [131,110,8,1,0,0,232,137,4,35,199,138].pack('c*')
+      assert_equal bert, BERT::Encoder.encode(-10_000_000_000_000_000_000)
     end
 
     should "leave other stuff alone" do
