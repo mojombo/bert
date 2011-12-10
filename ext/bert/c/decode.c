@@ -333,7 +333,7 @@ static VALUE bert_read_atom(struct bert_buf *buf)
 static VALUE bert_read_sint(struct bert_buf *buf)
 {
 	bert_buf_ensure(buf, 1);
-	return INT2FIX((int8_t)bert_buf_read8(buf));
+	return INT2FIX((uint8_t)bert_buf_read8(buf));
 }
 
 static VALUE bert_read_int(struct bert_buf *buf)
