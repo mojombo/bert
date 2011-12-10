@@ -1,6 +1,9 @@
 # Loads mkmf which is used to make makefiles for Ruby extensions
 require 'mkmf'
 
+# warnings save lives
+$CFLAGS << " -Wall "
+
 # Give it a name
 extension_name = 'decode'
 
