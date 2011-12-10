@@ -8,7 +8,9 @@ module BERT
     end
 
     def self.decode(string)
-      new(StringIO.new(string)).read_any
+      io = StringIO.new(string)
+      io.set_encoding('binary') if io.respond_to?(:set_encoding)
+      new(io).read_any
     end
 
     def initialize(ins)
@@ -113,7 +115,7 @@ module BERT
       value = read_4
       negative = (value >> 31)[0] == 1
       value = (value - (1 << 32)) if negative
-      value = Fixnum.induced_from(value)
+      value
     end
 
     def read_small_bignum
@@ -126,7 +128,7 @@ module BERT
         value = (byte * (256 ** index))
         sign != 0 ? (result - value) : (result + value)
       end
-      Bignum.induced_from(added)
+      added
     end
 
     def read_large_bignum
@@ -139,7 +141,7 @@ module BERT
         value = (byte * (256 ** index))
         sign != 0 ? (result - value) : (result + value)
       end
-      Bignum.induced_from(added)
+      added
     end
 
     def read_float

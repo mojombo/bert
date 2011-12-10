@@ -10,6 +10,7 @@ module BERT
 
     def self.encode(data)
       io = StringIO.new
+      io.set_encoding('binary') if io.respond_to?(:set_encoding)
       self.new(io).write_any(data)
       io.string
     end
