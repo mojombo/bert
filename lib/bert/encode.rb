@@ -78,7 +78,7 @@ module BERT
     end
 
     def write_bignum(num)
-      n = (num.to_s(2).size / 8.0).ceil
+      n = (num.abs.to_s(2).size / 8.0).ceil
       if n < 256
         write_1 SMALL_BIGNUM
         write_1 n
