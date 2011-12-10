@@ -287,7 +287,7 @@ static VALUE bert_read_bin(struct bert_buf *buf)
 	length = bert_buf_read32(buf);
 
 	bert_buf_ensure(buf, length);
-	rb_bin = rb_str_new(buf->data, length);
+	rb_bin = rb_str_new((char *)buf->data, length);
 	buf->data += length;
 
 	return rb_bin;
@@ -324,7 +324,7 @@ static VALUE bert_read_atom(struct bert_buf *buf)
 	 * and internalize it. this will be faster for
 	 * unique symbols */
 	bert_buf_ensure(buf, atom_len);
-	rb_atom = rb_str_new(buf->data, atom_len);
+	rb_atom = rb_str_new((char *)buf->data, atom_len);
 	buf->data += atom_len;
 
 	return rb_str_intern(rb_atom);
@@ -447,7 +447,7 @@ static VALUE bert_read_float(struct bert_buf *buf)
 
 	bert_buf_ensure(buf, 31);
 
-	rb_float = rb_str_new(buf->data, 31);
+	rb_float = rb_str_new((char *)buf->data, 31);
 	buf->data += 31;
 
 	return rb_funcall(rb_float, rb_intern("to_f"), 0);
@@ -469,7 +469,7 @@ static VALUE rb_bert_decode(VALUE klass, VALUE rb_string)
 	struct bert_buf buf;
 
 	Check_Type(rb_string, T_STRING);
-	buf.data = RSTRING_PTR(rb_string);
+	buf.data = (uint8_t *)RSTRING_PTR(rb_string);
 	buf.end = buf.data + RSTRING_LEN(rb_string);
 
 	bert_buf_ensure(&buf, 1);
