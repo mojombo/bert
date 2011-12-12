@@ -1,3 +1,9 @@
+= 1.1.5 / 2011-12-09
+  * Bug fixes
+    * Faster and more secure C BERT decoder
+    * Fix for encoding of negative bignums
+    * Ruby 1.9 compatibility
+
 = 1.1.2 / 2010-02-08
   * Bug fixes
     * Fix bignum handling on 256 byte boundary
