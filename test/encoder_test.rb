@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'test_helper'
 
 class EncoderTest < Test::Unit::TestCase
@@ -77,6 +79,16 @@ class EncoderTest < Test::Unit::TestCase
       assert cruby.instance_of?(BERT::Tuple)
       assert cruby[0].instance_of?(Symbol)
       assert cruby[1].instance_of?(BERT::Tuple)
+    end
+    
+    should 'handle utf8 strings' do
+      bert = [131, 109, 0, 0, 0, 5, 195, 169, 116, 195, 169].pack('C*')
+      assert_equal bert, BERT::Encoder.encode("été")
+    end
+    
+    should 'handle utf8 symbols' do
+      bert = [131, 100, 0, 5, 195, 169, 116, 195, 169].pack('C*')
+      assert_equal bert, BERT::Encoder.encode(:'été')
     end
 
     should "handle bignums" do
