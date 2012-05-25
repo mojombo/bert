@@ -1,3 +1,7 @@
+= 1.1.6 / 2012-05-25
+  * Bug fixes
+    * Better handling of utf-8 characters
+
 = 1.1.5 / 2011-12-09
   * Bug fixes
     * Faster and more secure C BERT decoder
