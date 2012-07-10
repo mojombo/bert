@@ -21,6 +21,7 @@ module BERT
     end
 
     def write_any_raw obj
+      obj = obj.to_bert if obj.respond_to?(:to_bert)
       case obj
         when Symbol then write_symbol(obj)
         when Fixnum, Bignum then write_fixnum(obj)
@@ -28,8 +29,7 @@ module BERT
         when Tuple then write_tuple(obj)
         when Array then write_list(obj)
         when String then write_binary(obj)
-        else
-          fail(obj)
+        else fail(obj)
       end
     end
 
