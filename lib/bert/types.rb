@@ -1,5 +1,6 @@
 module BERT
   module Types
+    IEEE_754_BINARY_64 = 70
     SMALL_INT = 97
     INT = 98
     SMALL_BIGNUM = 110

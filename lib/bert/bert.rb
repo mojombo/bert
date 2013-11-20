@@ -1,6 +1,6 @@
 module BERT
-  def self.encode(ruby)
-    Encoder.encode(ruby)
+  def self.encode(ruby, minor_version=0)
+    Encoder.encode(ruby, minor_version)
   end
 
   def self.decode(bert)

@@ -30,6 +30,7 @@ module BERT
         when INT then read_int
         when SMALL_BIGNUM then read_small_bignum
         when LARGE_BIGNUM then read_large_bignum
+        when IEEE_754_BINARY_64 then read_binary_64
         when FLOAT then read_float
         when SMALL_TUPLE then read_small_tuple
         when LARGE_TUPLE then read_large_tuple
@@ -148,6 +149,12 @@ module BERT
       fail("Invalid Type, not a float") unless read_1 == FLOAT
       string_value = read_string(31)
       result = string_value.to_f
+    end
+
+    def read_binary_64
+      fail("Invalid Type, not a IEEE 754 binary64") unless read_1 == IEEE_754_BINARY_64
+      string_value = read_string(8)
+      result = string_value.unpack("G")
     end
 
     def read_small_tuple

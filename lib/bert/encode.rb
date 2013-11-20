@@ -3,15 +3,17 @@ module BERT
     include Types
 
     attr_accessor :out
+    attr_accessor :minor_version
 
-    def initialize(out)
+    def initialize(out, minor_version)
       self.out = out
+      self.minor_version = minor_version
     end
 
-    def self.encode(data)
+    def self.encode(data, minor_version)
       io = StringIO.new
       io.set_encoding('binary') if io.respond_to?(:set_encoding)
-      self.new(io).write_any(data)
+      self.new(io, minor_version).write_any(data)
       io.string
     end
 
@@ -74,8 +76,13 @@ module BERT
     end
 
     def write_float(float)
-      write_1 FLOAT
-      write_string format("%15.15e", float).ljust(31, "\000")
+      if self.minor_version == 0
+        write_1 FLOAT
+        write_string format("%15.15e", float).ljust(31, "\000")
+      else
+        write_1 IEEE_754_BINARY_64
+        write_string [float].pack("G")
+      end
     end
 
     def write_bignum(num)

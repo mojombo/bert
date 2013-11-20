@@ -2,22 +2,20 @@
 #include <stdint.h>
 #include <netinet/in.h>
 
-#define ERL_SMALL_INT     97
-#define ERL_INT           98
-#define ERL_FLOAT         99
-#define ERL_ATOM          100
-#define ERL_SMALL_TUPLE   104
-#define ERL_LARGE_TUPLE   105
-#define ERL_NIL           106
-#define ERL_STRING        107
-#define ERL_LIST          108
-#define ERL_BIN           109
-#define ERL_SMALL_BIGNUM  110
-#define ERL_LARGE_BIGNUM  111
-#define ERL_VERSION       131
-
-#define BERT_VALID_TYPE(t) ((t) >= ERL_SMALL_INT && (t) <= ERL_LARGE_BIGNUM)
-#define BERT_TYPE_OFFSET (ERL_SMALL_INT)
+#define ERL_IEEE_754_BINARY_64 70
+#define ERL_SMALL_INT          97
+#define ERL_INT                98
+#define ERL_FLOAT              99
+#define ERL_ATOM               100
+#define ERL_SMALL_TUPLE        104
+#define ERL_LARGE_TUPLE        105
+#define ERL_NIL                106
+#define ERL_STRING             107
+#define ERL_LIST               108
+#define ERL_BIN                109
+#define ERL_SMALL_BIGNUM       110
+#define ERL_LARGE_BIGNUM       111
+#define ERL_VERSION            131
 
 static VALUE rb_mBERT;
 static VALUE rb_cDecode;
@@ -28,8 +26,7 @@ struct bert_buf {
 	const uint8_t *end;
 };
 
-static VALUE bert_read_invalid(struct bert_buf *buf);
-
+static VALUE bert_read_ieee_754_binary_64(struct bert_buf *buf);
 static VALUE bert_read_sint(struct bert_buf *buf);
 static VALUE bert_read_int(struct bert_buf *buf);
 static VALUE bert_read_float(struct bert_buf *buf);
@@ -45,13 +42,11 @@ static VALUE bert_read_lbignum(struct bert_buf *buf);
 
 typedef VALUE (*bert_ptr)(struct bert_buf *buf);
 static bert_ptr bert_callbacks[] = {
+	&bert_read_ieee_754_binary_64,
 	&bert_read_sint,
 	&bert_read_int,
 	&bert_read_float,
 	&bert_read_atom,
-	&bert_read_invalid,
-	&bert_read_invalid,
-	&bert_read_invalid,
 	&bert_read_stuple,
 	&bert_read_ltuple,
 	&bert_read_nil,
@@ -95,17 +90,30 @@ static inline void bert_buf_ensure(struct bert_buf *buf, size_t size)
 		rb_raise(rb_eEOFError, "Unexpected end of BERT stream");
 }
 
+static inline int bert_type_callback_index(uint8_t type)
+{
+	if (type == ERL_IEEE_754_BINARY_64)
+		return 0;
+	else if (type >= ERL_SMALL_INT && type <= ERL_ATOM)
+		return type - 96;
+	else if (type >= ERL_SMALL_TUPLE && type <= ERL_LARGE_BIGNUM)
+		return type - 99;
+	else
+		return -1;
+}
+
 static VALUE bert_read(struct bert_buf *buf)
 {
 	uint8_t type;
+	int callback_index;
 
 	bert_buf_ensure(buf, 1);
 	type = bert_buf_read8(buf);
 
-	if (!BERT_VALID_TYPE(type))
+	if((callback_index = bert_type_callback_index(type)) < 0)
 		rb_raise(rb_eRuntimeError, "Invalid tag '%d' for term", type);
 
-	return bert_callbacks[type - BERT_TYPE_OFFSET](buf);
+	return bert_callbacks[callback_index](buf);
 }
 
 static VALUE bert_read_dict(struct bert_buf *buf)
@@ -453,15 +461,28 @@ static VALUE bert_read_float(struct bert_buf *buf)
 	return rb_funcall(rb_float, rb_intern("to_f"), 0);
 }
 
+union binary64
+{
+    double value;
+    char bytes[sizeof (double)];
+};
+
+static VALUE bert_read_ieee_754_binary_64(struct bert_buf *buf)
+{
+    union binary64 bin64;
+    int i;
+
+    bert_buf_ensure(buf, 8);
+
+    for (i = 7; i >= 0; i--)
+        bin64.bytes[i] = *(buf->data)++;
+
+    return rb_float_new(bin64.value);
+}
+
 static VALUE bert_read_nil(struct bert_buf *buf)
 {
 	return rb_ary_new2(0);
-}
-
-static VALUE bert_read_invalid(struct bert_buf *buf)
-{
-	rb_raise(rb_eTypeError, "Invalid object tag in BERT stream");
-	return Qnil;
 }
 
 static VALUE rb_bert_decode(VALUE klass, VALUE rb_string)

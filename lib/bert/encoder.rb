@@ -4,9 +4,9 @@ module BERT
     #   +ruby+ is the Ruby object
     #
     # Returns a BERT
-    def self.encode(ruby)
+    def self.encode(ruby, minor_version)
       complex_ruby = convert(ruby)
-      Encode.encode(complex_ruby)
+      Encode.encode(complex_ruby, minor_version)
     end
 
     # Convert complex Ruby form in simple Ruby form.
