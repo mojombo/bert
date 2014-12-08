@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.dirname(__FILE__) + '/test_helper'
 
 class DecoderTest < Test::Unit::TestCase
   BERT_NIL = [131,104,2,100,0,4,98,101,114,116,100,0,3,110,105,108].pack('c*')

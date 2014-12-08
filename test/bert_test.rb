@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.dirname(__FILE__) + '/test_helper'
 
 class BertTest < Test::Unit::TestCase
   context "BERT" do
