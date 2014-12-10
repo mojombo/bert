@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require 'test_helper'
+require File.dirname(__FILE__) + '/test_helper'
 
 class EncoderTest < Test::Unit::TestCase
   context "BERT Encoder complex type converter" do
