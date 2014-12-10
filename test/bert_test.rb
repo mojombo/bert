@@ -42,7 +42,7 @@ class BertTest < Test::Unit::TestCase
       dd << {}
       dd << {:a => 1}
       dd << {:a => 1, :b => 2}
-      dd << Time.now
+      dd << Time.now.round(6)
       dd << /^c(a)t$/i
 
       dd << 178
