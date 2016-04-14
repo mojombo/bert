@@ -8,7 +8,6 @@ require 'bert/types'
 
 begin
   # try to load the C extension
-  raise LoadError
   require 'bert/c/decode'
 rescue LoadError
   # fall back on the pure ruby version

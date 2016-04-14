@@ -2,6 +2,27 @@ module BERT
   class Encode
     include Types
 
+    class V2 < Encode
+      def write_binary(data)
+        super
+        enc = data.encoding.name
+        write_1 BIN
+        write_4 enc.bytesize
+        write_string enc
+      end
+
+      private
+
+      def version_header
+        VERSION_2
+      end
+    end
+
+    class << self
+      attr_accessor :version
+    end
+    self.version = :v1
+
     attr_accessor :out
 
     def initialize(out)
@@ -11,12 +32,18 @@ module BERT
     def self.encode(data)
       io = StringIO.new
       io.set_encoding('binary') if io.respond_to?(:set_encoding)
-      self.new(io).write_any(data)
+
+      if version == :v2
+        Encode::V2.new(io).write_any(data)
+      else
+        new(io).write_any(data)
+      end
+
       io.string
     end
 
     def write_any obj
-      write_1 VERSION_2
+      write_1 version_header
       write_any_raw obj
     end
 
@@ -128,13 +155,13 @@ module BERT
       write_1 BIN
       write_4 data.bytesize
       write_string data
-      enc = data.encoding.name
-      write_1 BIN
-      write_4 enc.bytesize
-      write_string enc
     end
 
     private
+
+    def version_header
+      MAGIC
+    end
 
     def fail(obj)
       raise "Cannot encode to erlang external format: #{obj.inspect}"
