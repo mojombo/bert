@@ -82,20 +82,21 @@ class EncoderTest < Test::Unit::TestCase
     end
 
     should 'handle utf8 strings' do
-      bert = [131, 109, 0, 0, 0, 5, 195, 169, 116, 195, 169].pack('C*')
+      str = "été".encode 'UTF-8'
+      bert = [132, 109, 0, 0, 0, 5, 195, 169, 116, 195, 169, 109, 0, 0, 0, 5, 85, 84, 70, 45, 56].pack('C*')
       assert_equal bert, BERT::Encoder.encode("été")
     end
 
     should 'handle utf8 symbols' do
-      bert = [131, 100, 0, 5, 195, 169, 116, 195, 169].pack('C*')
+      bert = [132, 100, 0, 5, 195, 169, 116, 195, 169].pack('C*')
       assert_equal bert, BERT::Encoder.encode(:'été')
     end
 
     should "handle bignums" do
-      bert = [131,110,8,0,0,0,232,137,4,35,199,138].pack('c*')
+      bert = [132,110,8,0,0,0,232,137,4,35,199,138].pack('c*')
       assert_equal bert, BERT::Encoder.encode(10_000_000_000_000_000_000)
 
-      bert = [131,110,8,1,0,0,232,137,4,35,199,138].pack('c*')
+      bert = [132,110,8,1,0,0,232,137,4,35,199,138].pack('c*')
       assert_equal bert, BERT::Encoder.encode(-10_000_000_000_000_000_000)
     end
 

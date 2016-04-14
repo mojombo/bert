@@ -16,7 +16,7 @@ module BERT
     end
 
     def write_any obj
-      write_1 MAGIC
+      write_1 VERSION_2
       write_any_raw obj
     end
 
@@ -128,6 +128,10 @@ module BERT
       write_1 BIN
       write_4 data.bytesize
       write_string data
+      enc = data.encoding.name
+      write_1 BIN
+      write_4 enc.bytesize
+      write_string enc
     end
 
     private
