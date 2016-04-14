@@ -3,20 +3,6 @@ module BERT
     attr_accessor :in
     include Types
 
-    class V1 < Decode
-      def read_bin
-        fail("Invalid Type, not an erlang binary") unless read_1 == BIN
-        length = read_4
-        read_string(length)
-      end
-
-      def read_erl_string
-        fail("Invalid Type, not an erlang string") unless read_1 == STRING
-        length = read_2
-        read_string(length).unpack('C' * length)
-      end
-    end
-
     def self.impl
       'Ruby'
     end
@@ -26,9 +12,7 @@ module BERT
       io.set_encoding('binary') if io.respond_to?(:set_encoding)
       header = io.getbyte
       case header
-      when MAGIC
-        Decode::V1.new(io).read_any
-      when VERSION_2
+      when MAGIC, VERSION_2
         new(io).read_any
       else
         fail("Bad Magic")
