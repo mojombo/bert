@@ -9,6 +9,12 @@ module BERT
         length = read_4
         read_string(length)
       end
+
+      def read_erl_string
+        fail("Invalid Type, not an erlang string") unless read_1 == STRING
+        length = read_2
+        read_string(length).unpack('C' * length)
+      end
     end
 
     def self.impl
@@ -52,6 +58,8 @@ module BERT
         when STRING then read_erl_string
         when LIST then read_list
         when BIN then read_bin
+        when ENC_STRING then read_enc_string
+        when UNICODE_STRING then read_unicode_string
         else
           fail("Unknown term tag: #{peek_1}")
       end
@@ -238,6 +246,14 @@ module BERT
       []
     end
 
+    def read_unicode_string
+      fail("Invalid Type, not a unicode string") unless read_1 == UNICODE_STRING
+      length = read_4
+      str = read_string(length)
+      str.force_encoding "UTF-8"
+      str
+    end
+
     def read_erl_string
       fail("Invalid Type, not an erlang string") unless read_1 == STRING
       length = read_2
@@ -255,16 +271,24 @@ module BERT
     def read_bin
       fail("Invalid Type, not an erlang binary") unless read_1 == BIN
       length = read_4
+      read_string(length)
+    end
+
+    def fail(str)
+      raise str
+    end
+
+    private
+
+    def read_enc_string
+      fail("Invalid Type, not an erlang binary") unless read_1 == ENC_STRING
+      length = read_4
       x = read_string(length)
 
       fail("Invalid Type, not an erlang binary") unless read_1 == BIN
       length = read_4
       x.force_encoding read_string(length)
       x
-    end
-
-    def fail(str)
-      raise str
     end
   end
 end

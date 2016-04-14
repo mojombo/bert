@@ -15,10 +15,12 @@
 #define ERL_BIN           109
 #define ERL_SMALL_BIGNUM  110
 #define ERL_LARGE_BIGNUM  111
+#define ERL_ENC_STRING    112
+#define ERL_UNICODE_STRING 113
 #define ERL_VERSION       131
 #define ERL_VERSION2      132
 
-#define BERT_VALID_TYPE(t) ((t) >= ERL_SMALL_INT && (t) <= ERL_LARGE_BIGNUM)
+#define BERT_VALID_TYPE(t) ((t) >= ERL_SMALL_INT && (t) <= ERL_UNICODE_STRING)
 #define BERT_TYPE_OFFSET (ERL_SMALL_INT)
 
 static VALUE rb_mBERT;
@@ -47,7 +49,9 @@ static VALUE bert_read_nil(struct bert_buf *buf);
 static VALUE bert_read_string(struct bert_buf *buf);
 static VALUE bert_read_list(struct bert_buf *buf);
 static VALUE bert_read_bin(struct bert_buf *buf);
-static VALUE bert_read_bin_v2(struct bert_buf *buf);
+static VALUE bert_read_enc_string(struct bert_buf *buf);
+static VALUE bert_read_unicode_string(struct bert_buf *buf);
+static VALUE bert_read_unicode_string(struct bert_buf *buf);
 static VALUE bert_read_sbignum(struct bert_buf *buf);
 static VALUE bert_read_lbignum(struct bert_buf *buf);
 
@@ -66,25 +70,9 @@ static bert_ptr bert_callbacks[] = {
 	&bert_read_list,
 	&bert_read_bin,
 	&bert_read_sbignum,
-	&bert_read_lbignum
-};
-
-static bert_ptr bert_callbacks_v2[] = {
-	&bert_read_sint,
-	&bert_read_int,
-	&bert_read_float,
-	&bert_read_atom,
-	&bert_read_invalid,
-	&bert_read_invalid,
-	&bert_read_invalid,
-	&bert_read_stuple,
-	&bert_read_ltuple,
-	&bert_read_nil,
-	&bert_read_string,
-	&bert_read_list,
-	&bert_read_bin_v2,
-	&bert_read_sbignum,
-	&bert_read_lbignum
+	&bert_read_lbignum,
+	&bert_read_enc_string,
+	&bert_read_unicode_string
 };
 
 static inline uint8_t bert_buf_read8(struct bert_buf *buf)
@@ -318,7 +306,17 @@ static VALUE bert_read_bin(struct bert_buf *buf)
 	return rb_bin;
 }
 
-static VALUE bert_read_bin_v2(struct bert_buf *buf)
+static VALUE bert_read_unicode_string(struct bert_buf *buf)
+{
+    VALUE rb_str;
+
+    rb_str = bert_read_bin(buf);
+    rb_enc_associate(rb_str, rb_utf8_encoding());
+
+    return rb_str;
+}
+
+static VALUE bert_read_enc_string(struct bert_buf *buf)
 {
 	uint8_t type;
 	VALUE rb_bin, enc;
@@ -524,7 +522,7 @@ static VALUE rb_bert_decode(VALUE klass, VALUE rb_string)
 		buf.callbacks = bert_callbacks;
 		break;
 	    case ERL_VERSION2:
-		buf.callbacks = bert_callbacks_v2;
+		buf.callbacks = bert_callbacks;
 		break;
 	    default:
 		rb_raise(rb_eTypeError, "Invalid magic value for BERT string");
