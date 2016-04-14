@@ -23,9 +23,14 @@ static VALUE rb_mBERT;
 static VALUE rb_cDecode;
 static VALUE rb_cTuple;
 
+typedef struct bert_buf bert_buf;
+
+typedef VALUE (*bert_ptr)(struct bert_buf *buf);
+
 struct bert_buf {
 	const uint8_t *data;
 	const uint8_t *end;
+	bert_ptr *callbacks;
 };
 
 static VALUE bert_read_invalid(struct bert_buf *buf);
@@ -43,7 +48,6 @@ static VALUE bert_read_bin(struct bert_buf *buf);
 static VALUE bert_read_sbignum(struct bert_buf *buf);
 static VALUE bert_read_lbignum(struct bert_buf *buf);
 
-typedef VALUE (*bert_ptr)(struct bert_buf *buf);
 static bert_ptr bert_callbacks[] = {
 	&bert_read_sint,
 	&bert_read_int,
@@ -105,7 +109,7 @@ static VALUE bert_read(struct bert_buf *buf)
 	if (!BERT_VALID_TYPE(type))
 		rb_raise(rb_eRuntimeError, "Invalid tag '%d' for term", type);
 
-	return bert_callbacks[type - BERT_TYPE_OFFSET](buf);
+	return buf->callbacks[type - BERT_TYPE_OFFSET](buf);
 }
 
 static VALUE bert_read_dict(struct bert_buf *buf)
@@ -477,6 +481,7 @@ static VALUE rb_bert_decode(VALUE klass, VALUE rb_string)
 	if (bert_buf_read8(&buf) != ERL_VERSION)
 		rb_raise(rb_eTypeError, "Invalid magic value for BERT string");
 
+	buf.callbacks = bert_callbacks;
 	return bert_read(&buf);
 }
 
