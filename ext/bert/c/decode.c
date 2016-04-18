@@ -15,12 +15,17 @@
 #define ERL_BIN           109
 #define ERL_SMALL_BIGNUM  110
 #define ERL_LARGE_BIGNUM  111
-#define ERL_ENC_STRING    112
-#define ERL_UNICODE_STRING 113
+
+/* These two types are specific to version 2 of the protocol.  They diverge
+ * from Erlang, but allow us to pass string encodings across the wire. */
+#define ERLEXT_ENC_STRING    112
+#define ERLEXT_UNICODE_STRING 113
+
+/* Protocol version constants. */
 #define ERL_VERSION       131
 #define ERL_VERSION2      132
 
-#define BERT_VALID_TYPE(t) ((t) >= ERL_SMALL_INT && (t) <= ERL_UNICODE_STRING)
+#define BERT_VALID_TYPE(t) ((t) >= ERL_SMALL_INT && (t) <= ERLEXT_UNICODE_STRING)
 #define BERT_TYPE_OFFSET (ERL_SMALL_INT)
 
 static VALUE rb_mBERT;
