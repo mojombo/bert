@@ -1,4 +1,5 @@
 #include "ruby.h"
+#include "ruby/encoding.h"
 #include <stdint.h>
 #include <netinet/in.h>
 
@@ -14,9 +15,17 @@
 #define ERL_BIN           109
 #define ERL_SMALL_BIGNUM  110
 #define ERL_LARGE_BIGNUM  111
-#define ERL_VERSION       131
 
-#define BERT_VALID_TYPE(t) ((t) >= ERL_SMALL_INT && (t) <= ERL_LARGE_BIGNUM)
+/* These two types are specific to version 2 of the protocol.  They diverge
+ * from Erlang, but allow us to pass string encodings across the wire. */
+#define ERLEXT_ENC_STRING    112
+#define ERLEXT_UNICODE_STRING 113
+
+/* Protocol version constants. */
+#define ERL_VERSION       131
+#define ERL_VERSION2      132
+
+#define BERT_VALID_TYPE(t) ((t) >= ERL_SMALL_INT && (t) <= ERLEXT_UNICODE_STRING)
 #define BERT_TYPE_OFFSET (ERL_SMALL_INT)
 
 static VALUE rb_mBERT;
@@ -40,6 +49,8 @@ static VALUE bert_read_nil(struct bert_buf *buf);
 static VALUE bert_read_string(struct bert_buf *buf);
 static VALUE bert_read_list(struct bert_buf *buf);
 static VALUE bert_read_bin(struct bert_buf *buf);
+static VALUE bert_read_enc_string(struct bert_buf *buf);
+static VALUE bert_read_unicode_string(struct bert_buf *buf);
 static VALUE bert_read_sbignum(struct bert_buf *buf);
 static VALUE bert_read_lbignum(struct bert_buf *buf);
 
@@ -59,7 +70,9 @@ static bert_ptr bert_callbacks[] = {
 	&bert_read_list,
 	&bert_read_bin,
 	&bert_read_sbignum,
-	&bert_read_lbignum
+	&bert_read_lbignum,
+	&bert_read_enc_string,
+	&bert_read_unicode_string
 };
 
 static inline uint8_t bert_buf_read8(struct bert_buf *buf)
@@ -293,6 +306,34 @@ static VALUE bert_read_bin(struct bert_buf *buf)
 	return rb_bin;
 }
 
+static VALUE bert_read_unicode_string(struct bert_buf *buf)
+{
+    VALUE rb_str;
+
+    rb_str = bert_read_bin(buf);
+    rb_enc_associate(rb_str, rb_utf8_encoding());
+
+    return rb_str;
+}
+
+static VALUE bert_read_enc_string(struct bert_buf *buf)
+{
+	uint8_t type;
+	VALUE rb_bin, enc;
+
+	rb_bin = bert_read_bin(buf);
+
+	bert_buf_ensure(buf, 1);
+	type = bert_buf_read8(buf);
+	if (ERL_BIN != type)
+		rb_raise(rb_eRuntimeError, "Invalid tag '%d' for term", type);
+
+	enc = bert_read_bin(buf);
+	rb_enc_associate(rb_bin, rb_find_encoding(enc));
+
+	return rb_bin;
+}
+
 static VALUE bert_read_string(struct bert_buf *buf)
 {
 	uint16_t i, length;
@@ -467,6 +508,7 @@ static VALUE bert_read_invalid(struct bert_buf *buf)
 static VALUE rb_bert_decode(VALUE klass, VALUE rb_string)
 {
 	struct bert_buf buf;
+	uint8_t proto_version;
 
 	Check_Type(rb_string, T_STRING);
 	buf.data = (uint8_t *)RSTRING_PTR(rb_string);
@@ -474,10 +516,12 @@ static VALUE rb_bert_decode(VALUE klass, VALUE rb_string)
 
 	bert_buf_ensure(&buf, 1);
 
-	if (bert_buf_read8(&buf) != ERL_VERSION)
-		rb_raise(rb_eTypeError, "Invalid magic value for BERT string");
-
-	return bert_read(&buf);
+	proto_version = bert_buf_read8(&buf);
+	if (proto_version == ERL_VERSION || proto_version == ERL_VERSION2) {
+	    return bert_read(&buf);
+	} else {
+	    rb_raise(rb_eTypeError, "Invalid magic value for BERT string");
+	}
 }
 
 static VALUE rb_bert_impl(VALUE klass)

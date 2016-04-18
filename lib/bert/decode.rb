@@ -10,7 +10,13 @@ module BERT
     def self.decode(string)
       io = StringIO.new(string)
       io.set_encoding('binary') if io.respond_to?(:set_encoding)
-      new(io).read_any
+      header = io.getbyte
+      case header
+      when MAGIC, VERSION_2
+        new(io).read_any
+      else
+        fail("Bad Magic")
+      end
     end
 
     def initialize(ins)
@@ -19,7 +25,6 @@ module BERT
     end
 
     def read_any
-      fail("Bad Magic") unless read_1 == MAGIC
       read_any_raw
     end
 
@@ -37,6 +42,8 @@ module BERT
         when STRING then read_erl_string
         when LIST then read_list
         when BIN then read_bin
+        when ENC_STRING then read_enc_string
+        when UNICODE_STRING then read_unicode_string
         else
           fail("Unknown term tag: #{peek_1}")
       end
@@ -223,6 +230,14 @@ module BERT
       []
     end
 
+    def read_unicode_string
+      fail("Invalid Type, not a unicode string") unless read_1 == UNICODE_STRING
+      length = read_4
+      str = read_string(length)
+      str.force_encoding "UTF-8"
+      str
+    end
+
     def read_erl_string
       fail("Invalid Type, not an erlang string") unless read_1 == STRING
       length = read_2
@@ -245,6 +260,19 @@ module BERT
 
     def fail(str)
       raise str
+    end
+
+    private
+
+    def read_enc_string
+      fail("Invalid Type, not an erlang binary") unless read_1 == ENC_STRING
+      length = read_4
+      x = read_string(length)
+
+      fail("Invalid Type, not an erlang binary") unless read_1 == BIN
+      length = read_4
+      x.force_encoding read_string(length)
+      x
     end
   end
 end

@@ -82,6 +82,7 @@ class EncoderTest < Test::Unit::TestCase
     end
 
     should 'handle utf8 strings' do
+      str = "été".encode 'UTF-8'
       bert = [131, 109, 0, 0, 0, 5, 195, 169, 116, 195, 169].pack('C*')
       assert_equal bert, BERT::Encoder.encode("été")
     end
@@ -97,6 +98,36 @@ class EncoderTest < Test::Unit::TestCase
 
       bert = [131,110,8,1,0,0,232,137,4,35,199,138].pack('c*')
       assert_equal bert, BERT::Encoder.encode(-10_000_000_000_000_000_000)
+    end
+
+    context "v2" do
+      setup do
+        @old_version = BERT::Encode.version
+        BERT::Encode.version = :v2
+      end
+
+      teardown do
+        BERT::Encode.version = @old_version
+      end
+
+      should 'handle utf8 strings' do
+        str = "été".encode 'UTF-8'
+        bert = [132, 113, 0, 0, 0, 5, 195, 169, 116, 195, 169].pack('C*')
+        assert_equal bert, BERT::Encoder.encode("été")
+      end
+
+      should 'handle utf8 symbols' do
+        bert = [132, 100, 0, 5, 195, 169, 116, 195, 169].pack('C*')
+        assert_equal bert, BERT::Encoder.encode(:'été')
+      end
+
+      should "handle bignums" do
+        bert = [132,110,8,0,0,0,232,137,4,35,199,138].pack('c*')
+        assert_equal bert, BERT::Encoder.encode(10_000_000_000_000_000_000)
+
+        bert = [132,110,8,1,0,0,232,137,4,35,199,138].pack('c*')
+        assert_equal bert, BERT::Encoder.encode(-10_000_000_000_000_000_000)
+      end
     end
 
     should "leave other stuff alone" do

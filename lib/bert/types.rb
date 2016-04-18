@@ -12,9 +12,11 @@ module BERT
     STRING = 107
     LIST = 108
     BIN = 109
+    ENC_STRING = 112
+    UNICODE_STRING = 113
     FUN = 117
-    NEW_FUN = 112
     MAGIC = 131
+    VERSION_2 = 132
     MAX_INT = (1 << 27) -1
     MIN_INT = -(1 << 27)
   end
