@@ -23,7 +23,7 @@ module BERT
     def write_any_raw obj
       case obj
         when Symbol then write_symbol(obj)
-        when Fixnum, Bignum then write_fixnum(obj)
+        when Integer then write_fixnum(obj)
         when Float then write_float(obj)
         when Tuple then write_tuple(obj)
         when Array then write_list(obj)
